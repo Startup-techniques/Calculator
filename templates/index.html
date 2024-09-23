@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <form method="post">
+            <label for="expression">Expression:</label>
+            <input name="expression" id="expression">
+            <input type="submit" name="action" value="calculate">
+            <input type="submit" name="action" value="history">
+        </form>
+
+        {% for expr in history %}
+            <a><p>{{ expr }} </p> </a>
+        {% endfor %}
+    </body>
+</html>
