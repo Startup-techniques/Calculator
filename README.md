@@ -2,14 +2,12 @@
 
 ## Installation guide
 
-`pip install virtualenv`
+`sudo apt install python3.10-venv`
 
-`python -m venv calculator-services`
+`python3 -m venv calculator-services`
 
-For Linux: `source calculator-services/bin/activate`
+`source calculator-services/bin/activate`
 
-For Windows Cmd: `calculator-services\Scripts\activate.bat`
+`pip3 install -r requirments.txt`
 
-`pip install -r requirments.txt`
-
-`python calculator.py`
+`python3 calculator.py`
