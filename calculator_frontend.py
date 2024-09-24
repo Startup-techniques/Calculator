@@ -53,9 +53,10 @@ def index():
             history_list = values
         else:
             expr = request.form.get('expression')
-            result = requests.post("http://127.0.0.1:3001/submit", json={'exp': expr}).content.decode('ascii')
+            response = requests.post("http://127.0.0.1:3001/submit", json={'exp': expr})
+            result = response.content.decode('ascii')
             current_result = result
-            history_list.insert(0, f'{expr} = {result}')
+            history_list.insert(0, (expr, result, response.status_code == 200))
     return render_template('index.html', title='Home', history=history_list, result=current_result, elements=ELEMENTS)
 
 
