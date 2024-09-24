@@ -24,13 +24,22 @@
             <div class="history-section">
                 <h2>History</h2>
                 <ul>
-                    {% for expr in history %}
-                    <li>
-                        <span>{{ expr }}</span>
-                        <button type="button" class="use-btn" 
-                                data-expression="{{ expr.split('=')[0].strip() }}"
-                                data-result="{{ expr.split('=')[1].strip() }}">Use</button>
-                    </li>
+                    {% for row in history %}
+                        {% if row[2] %}
+                        <li>
+                            <span>{{ row[0] + " = " + row[1] }}</span>
+                            <button type="button" class="use-btn" 
+                                    data-expression="{{  row[0].strip() }}"
+                                    data-result="{{ row[1].strip() }}">Use</button>
+                        </li>
+                        {% else %}
+                        <li>
+                            <span>{{ "Failed to calculate " + row[0] + " with error: " + row[1] }}</span>
+                            <button type="button" class="use-btn" 
+                                    data-expression="{{  row[0].strip() }}"
+                                    data-result="{{ row[1].strip() }}">Use</button>
+                        </li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </div>

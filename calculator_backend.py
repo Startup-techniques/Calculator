@@ -46,6 +46,17 @@ def query_db(query, args=(), one=False):
     return (rows[0] if rows else None) if one else rows
 
 
+class InternalError(Exception):
+    def __init__(self, message):
+        super().__init__()
+        self.message = message
+
+
+@app.errorhandler(InternalError)
+def internal_error(e):
+    return e.message, 500
+
+
 @app.route("/history", methods=["GET"])
 def history():
     buffer = []
@@ -64,13 +75,13 @@ def submit():
         abort(400, description="Failed to get expression")
     try:
         exp = exp['exp']
-        res = str(eval(exp, ENV))
+        res = str(eval(exp, ENV, {}))
         db = get_db()
         db.execute(f"INSERT INTO history(exp, res) VALUES ('{exp}', '{res}');")
         db.commit()
         return res
     except Exception as e:
-        abort(500, description=e)
+        raise InternalError(str(e))
 
 
 @app.teardown_appcontext
