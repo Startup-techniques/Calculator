@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="calc-section">
+                <form method="post" class="calc-form">
+                    <label for="expression">Enter Expression: </label>
+                    <input type="text" name="expression" id="expression" placeholder="0 + 3" required>
+                    <button type="submit" name="action" value="calculate">OK</button>
+                </form>
+
+                <div class="result-box">
+                    <h2>Result:</h2>
+                    <p id="result-display">{{ result }}</p>
+		</div>
+            </div>
+
+            <div class="history-section">
+                <h2>History</h2>
+                <ul>
+                    {% for expr in history %}
+                    <li>
+                        <span>{{ expr }}</span>
+                        <button type="button" class="use-btn" 
+                                data-expression="{{ expr.split('=')[0].strip() }}"
+                                data-result="{{ expr.split('=')[1].strip() }}">Use</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll('.use-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const expression = this.getAttribute('data-expression');
+                    const result = this.getAttribute('data-result');
+                    document.getElementById('expression').value = expression;
+                    document.getElementById('result-display').textContent = result;
+                });
+            });
+        </script>
+    </body>
+</html>

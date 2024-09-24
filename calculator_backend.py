@@ -59,10 +59,11 @@ def history():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    exp = request.form.get("exp")
+    exp = request.json
     if exp is None:
         abort(400, description="Failed to get expression")
     try:
+        exp = exp['exp']
         res = str(eval(exp, ENV))
         db = get_db()
         db.execute(f"INSERT INTO history(exp, res) VALUES ('{exp}', '{res}');")
