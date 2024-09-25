@@ -1,50 +1,141 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ title }}</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    </head>
-    <body>
-        <div class="container">
-            <div class="calc-section">
-                <form method="post" class="calc-form">
-                    <label for="expression">Enter Expression: </label>
-                    <input type="text" name="expression" id="expression" placeholder="0 + 3" required>
-                    <button type="submit" name="action" value="calculate">OK</button>
-                </form>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="calc-section">
+            <form method="post" class="calc-form">
+                <label for="expression">Enter Expression: </label>
+                <input type="text" name="expression" id="expression" placeholder="0 + 3" required>
 
                 <div class="result-box">
-                    <h2>Result:</h2>
+                    {% if result %}
                     <p id="result-display">{{ result }}</p>
-		</div>
-            </div>
+                    {% else %}
+                    <p id="result-display"></p>
+                    {% endif %}
+                </div>
 
-            <div class="history-section">
-                <h2>History</h2>
-                <ul>
-                    {% for expr in history %}
-                    <li>
-                        <span>{{ expr }}</span>
-                        <button type="button" class="use-btn" 
-                                data-expression="{{ expr.split('=')[0].strip() }}"
-                                data-result="{{ expr.split('=')[1].strip() }}">Use</button>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+                <div class="keyboard">
+                    <div class="submit-button">
+                        <button type="submit" name="action" value="calculate">OK</button>
+                    </div>
+
+                    <div class="keyboard-buttons">
+                        <div class="keyboard-block2">
+                            <button type="button" name="clear" id="clear">C</button>
+                            <button type="button" name="clear-all" id="clear-all">AC</button>
+                            <button type="button" name="push-pi" id="push-pi">pi</button>
+                            <button type="button" name="push-e" id="push-e">e</button>
+                        </div>
+
+                        <div class="keyboard-block1">
+                            <button type="button" name="push-sin" id="push-sin">sin</button>
+                            <button type="button" name="push-asin" id="push-asin">asin</button>
+                            <button type="button" name="push-cos" id="push-cos">cos</button>
+                            <button type="button" name="push-acos" id="push-acos">acos</button>
+                            <button type="button" name="push-tan" id="push-tan">tan</button>
+                            <button type="button" name="push-atan" id="push-atan">atan</button>
+                            <button type="button" name="push-sinh" id="push-sinh">sinh</button>
+                            <button type="button" name="push-asinh" id="push-asinh">asinh</button>
+                            <button type="button" name="push-cosh" id="push-cosh">cosh</button>
+                            <button type="button" name="push-acosh" id="push-acosh">acosh</button>
+                            <button type="button" name="push-tanh" id="push-tanh">tanh</button>
+                            <button type="button" name="push-atanh" id="push-atanh">atanh</button>
+                        </div>
+
+                        <div class="keyboard-block4">
+                            <button type="button" name="push-7" id="push-7">7</button>
+                            <button type="button" name="push-8" id="push-8">8</button>
+                            <button type="button" name="push-9" id="push-9">9</button>
+                            <button type="button" name="push-4" id="push-4">4</button>
+                            <button type="button" name="push-5" id="push-5">5</button>
+                            <button type="button" name="push-6" id="push-6">6</button>
+                            <button type="button" name="push-1" id="push-1">1</button>
+                            <button type="button" name="push-2" id="push-2">2</button>
+                            <button type="button" name="push-3" id="push-3">3</button>
+                            <button type="button" name="push-0" id="push-0">0</button>
+                            <button type="button" name="push-left-bracket" id="push-left-bracket">(</button>
+                            <button type="button" name="push-right-bracket" id="push-right-bracket">)</button>
+                            <button type="button" name="push-dot" id="push-dot">.</button>
+                            <button type="button" name="push-mod" id="push-mod">%</button>
+                            <button type="button" name="push-sqrt" id="push-sqrt">sqrt</button>
+                        </div>
+
+                        <div class="keyboard-block3">
+                            <button type="button" name="push-plus" id="push-plus">+</button>
+                        </div>
+
+                        <div class="keyboard-block5">
+                            <button type="button" name="push-minus" id="push-minus">-</button>
+                            <button type="button" name="push-mul" id="push-mul">*</button>
+                            <button type="button" name="push-div" id="push-div">/</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
         </div>
 
-        <script>
-            document.querySelectorAll('.use-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const expression = this.getAttribute('data-expression');
-                    const result = this.getAttribute('data-result');
-                    document.getElementById('expression').value = expression;
-                    document.getElementById('result-display').textContent = result;
-                });
+        <div class="history-section">
+            <h2>History</h2>
+            <ul>
+                {% for row in history %}
+                    {% if row[2] %}
+                    <li>
+                        <span>{{ row[0] + " = " + row[1] }}</span>
+                        <button type="button" class="use-btn" 
+                                data-expression="{{  row[0].strip() }}"
+                                data-result="{{ row[1].strip() }}">Use</button>
+                    </li>
+                    {% else %}
+                    <li>
+                        <span>{{ "Failed to calculate " + row[0] + " with error: " + row[1] }}</span>
+                        <button type="button" class="use-btn" 
+                                data-expression="{{  row[0].strip() }}"
+                                data-result="{{ row[1].strip() }}">Use</button>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.use-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const expression = this.getAttribute('data-expression');
+                const result = this.getAttribute('data-result');
+                document.getElementById('expression').value = expression;
+                document.getElementById('result-display').textContent = result;
             });
-        </script>
-    </body>
+        });
+
+        document.getElementById('clear').addEventListener('click', function () {
+            const expression = document.getElementById('expression').value || "";
+            if (expression !== "")
+                document.getElementById('expression').value = expression.slice(0, -1);
+        });
+
+        document.getElementById('clear-all').addEventListener('click', function () {
+            document.getElementById('expression').value = "";
+        });
+
+        {% for (name, value) in elements.items() %}
+        document.getElementById("push-{{ name }}").addEventListener('click', function () {
+            const expression = document.getElementById('expression').value || "";
+            console.log(expression);
+            document.getElementById('expression').value = expression + "{{ value }}";
+        });
+        {% endfor %}
+    </script>
+</body>
+
 </html>
